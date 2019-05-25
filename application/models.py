@@ -1,17 +1,20 @@
-from service import db
+from sqlalchemy.orm import validates
+
+from application import db
 
 
 class Interviewer(db.Model):
     __tablename__ = 'interviewer'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(140))
-    department = db.Column(db.String(140))
+    name = db.Column(db.String(140), nullable=False)
+    department = db.Column(db.String(140), nullable=False)
 
     def __repr__(self):
         return '<Interviewer {}>'.format(self.name)
 
-    def __init__(self, name):
+    def __init__(self, name, department):
         self.name = name
+        self.department = department
 
     def save(self):
         db.session.add(self)
@@ -29,14 +32,16 @@ class Interviewer(db.Model):
 class Interviewee(db.Model):
     __tablename__ = 'interviewee'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(140))
+    name = db.Column(db.String(140), nullable=False)
     linked_in = db.Column(db.String(140))
     email = db.Column(db.String(140))
 
     def __repr__(self):
         return '<Interviewee {}>'.format(self.name)
 
-    def __init__(self, name):
+    def __init__(self, name, linked_in, email):
+        self.linked_in = linked_in
+        self.email = email
         self.name = name
 
     def save(self):
@@ -65,8 +70,11 @@ class Interview(db.Model):
     def __repr__(self):
         return '<Interview {}>'.format(self.id)
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, start_time, end_time, interviewer_id, interviewee_id):
+        self.start_time = start_time
+        self.end_time = end_time
+        self.interviewer = interviewer_id
+        self.interviewee = interviewee_id
 
     def save(self):
         db.session.add(self)
@@ -74,7 +82,7 @@ class Interview(db.Model):
 
     @staticmethod
     def get_all():
-        return Interviewes.query.all()
+        return Interview.query.all()
 
     def delete(self):
         db.session.delete(self)

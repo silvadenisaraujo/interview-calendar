@@ -4,11 +4,13 @@
 
 ### PyCharm ###
 .idea/
+*.db
 
 ### Flask ###
 instance/*
 !instance/.gitignore
 .webassets-cache
+migrations/
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
